@@ -1,6 +1,7 @@
 #include "mathtest.h"
 #include <random>
 #include <stdexcept>
+#include <iostream>
 
 Task::Task() {
 	num1 = random_int(1, 10000);
@@ -62,7 +63,7 @@ int calculation(int n1, int n2, char op) {
 int Task::random_int(int lc, int rc) {
 	static std::mt19937 gen(std::random_device{}());
 	if (lc > rc) std::swap(lc,rc);
-	if (lc == rc) throw std::logic_error(")))))))) left corner and right can't both be zero");
+	if (lc == rc && lc==0) throw std::logic_error(")))))))) left corner and right can't both be zero");
 	std::uniform_int_distribution<int> dist(lc, rc);
 	int res = dist(gen);
 	while (res == 0) res = dist(gen);
@@ -72,4 +73,61 @@ int Task::random_int(int lc, int rc) {
 char Task::random_op() {
 	static const char ops[] = { '+', '-', '*', '/' };
 	return ops[random_int(0, 3)];
+}
+
+MathTest::MathTest(int count)
+    : MathTest(count, 1, 100, Task::random_op())
+{
+}
+
+MathTest::MathTest(int count, int lc, int rc)
+    : MathTest(count, lc, rc, Task::random_op())
+{
+}
+
+MathTest::MathTest(int count, int lc, int rc, char op) :
+	_tasks(nullptr), _count(count), _user_answers(nullptr), _pc_answers(nullptr), _correct_count(0)
+{
+    if (count <= 0) throw std::logic_error("count must be > 0");
+    _tasks = new Task[_count];
+    _user_answers = new int[_count];
+    _pc_answers = new int[_count];
+    generate_tasks(lc, rc, op);
+}
+
+MathTest::~MathTest() {
+    delete[] _tasks;
+    delete[] _user_answers;
+    delete[] _pc_answers;
+}
+
+void MathTest::generate_tasks(int lc, int rc, char op) {
+    for (int i = 0; i < _count; i++) {
+        int f = Task::random_int(lc, rc);
+        int s = Task::random_int(lc, rc);
+        _tasks[i] = Task(f, s, op);
+        _pc_answers[i] = _tasks[i].getres();
+    }
+}
+
+void MathTest::run() {
+    _correct_count = 0;
+    for (int i = 0; i < _count; ++i) {
+        ask_question(i);
+        if (_user_answers[i] == _pc_answers[i])
+            _correct_count++;
+    }
+}
+
+void MathTest::ask_question(int index) {
+    std::cout << "Question " << (index + 1) << "/" << _count << ": "
+        << _tasks[index].getnum1() << ' '
+        << _tasks[index].getchar() << ' '
+        << _tasks[index].getnum2() << " = ";
+    std::cin >> _user_answers[index];
+    if (!std::cin) {
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        _user_answers[index] = 0;
+    }
 }

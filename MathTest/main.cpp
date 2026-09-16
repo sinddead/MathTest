@@ -1,5 +1,9 @@
 #include <iostream>
+#include "mathtest.h"
 int main() {
-	std::cout << "Hello world!" << std::endl;
-	return 0;
+    MathTest test(5, 1, 20, '+');
+    test.run();
+    MathTest test2(5, 1, 20);
+    test2.run();
+    return 0;
 }
