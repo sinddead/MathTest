@@ -61,8 +61,12 @@ int calculation(int n1, int n2, char op) {
 
 int Task::random_int(int lc, int rc) {
 	static std::mt19937 gen(std::random_device{}());
+	if (lc > rc) std::swap(lc,rc);
+	if (lc == rc) throw std::logic_error(")))))))) left corner and right can't both be zero");
 	std::uniform_int_distribution<int> dist(lc, rc);
-	return dist(gen);
+	int res = dist(gen);
+	while (res == 0) res = dist(gen);
+	return res;
 }
 
 char Task::random_op() {

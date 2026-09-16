@@ -26,4 +26,26 @@ public:
 int calculation(int n1, int n2, char op);
 
 class MathTest{
+private:
+	Task* _tasks;
+	int _count;
+	int* _user_answers;
+	int* _pc_answers;
+	int _correct_count;
+
+public:
+	explicit MathTest(int count);
+	MathTest(int count, int lñ, int rñ);
+	MathTest(int count, int lñ, int rñ, char op);
+
+	MathTest(const MathTest&) = delete;
+	MathTest& operator=(const MathTest&) = delete;
+
+	~MathTest();
+
+	void run();
+	void show_statistics() const;
+	void generate_tasks(int lñ, int rñ, char op);
+	void ask_question(int index);
+	char calc_mark() const;
 };
