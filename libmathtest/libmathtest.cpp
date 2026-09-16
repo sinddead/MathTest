@@ -2,6 +2,9 @@
 #include <random>
 #include <stdexcept>
 #include <iostream>
+#include <iomanip>
+#include <string>
+
 
 Task::Task() {
 	num1 = random_int(1, 10000);
@@ -130,4 +133,49 @@ void MathTest::ask_question(int index) {
         std::cin.ignore(10000, '\n');
         _user_answers[index] = 0;
     }
+}
+
+char MathTest::calc_mark() const {
+	double p = double(_correct_count) / _count;
+	if (p >= 0.9) return '5';
+	else if (p >= 0.7) return '4';
+	else if (p >= 0.5) return '3';
+	return '2';
+}
+
+void MathTest::show_statistics() const {
+    std::cout << '|' << std::setw(12) << "No" << " |";
+    for (int i = 0; i < _count; ++i)
+        std::cout << std::setw(8) << (i + 1) << " |";
+    std::cout << '\n';
+    std::cout << '+';
+    for (int i = 0; i < 13 + 10 * _count; ++i) std::cout << '-';
+    std::cout << "+\n";
+    std::cout << "|    Question |";
+    for (int i = 0; i < _count; ++i) {
+        std::string expr = std::to_string(_tasks[i].getnum1()) + " " +
+            std::string(1, _tasks[i].getchar()) + " " +
+            std::to_string(_tasks[i].getnum2());
+        std::cout << std::setw(8) << expr << " |";
+    }
+    std::cout << '\n';
+    std::cout << "| True Answer |";
+    for (int i = 0; i < _count; ++i)
+        std::cout << std::setw(8) << _pc_answers[i] << " |";
+    std::cout << '\n';
+    std::cout << "| Your Answer |";
+    for (int i = 0; i < _count; ++i)
+        std::cout << std::setw(8) << _user_answers[i] << " |";
+    std::cout << '\n';
+    std::cout << "|      Result |";
+    for (int i = 0; i < _count; ++i) {
+        char r = (_user_answers[i] == _pc_answers[i]) ? '+' : '-';
+        std::cout << std::setw(8) << r << " |";
+    }
+    std::cout << '\n';
+    std::cout << '+';
+    for (int i = 0; i < 13 + 10 * _count; ++i) std::cout << '-';
+    std::cout << "+\n";
+    std::cout << "Total Result: " << _correct_count << " / " << _count
+        << " (mark: " << calc_mark() << ")\n";
 }
