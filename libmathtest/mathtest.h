@@ -32,7 +32,6 @@ private:
 	int* _user_answers;
 	int* _pc_answers;
 	int _correct_count;
-
 public:
 	explicit MathTest(int count);
 	MathTest(int count, int lñ, int rñ);
@@ -48,4 +47,10 @@ public:
 	void generate_tasks(int lñ, int rñ, char op);
 	void ask_question(int index);
 	char calc_mark() const;
+
+	int get_count()           const { return _count; }
+	int get_correct_count()   const { return _correct_count; }
+	int get_pc_answer(int i)  const { return _pc_answers[i]; }
+	int get_user_answer(int i) const { return _user_answers[i]; }
+	const Task& get_task(int i) const { return _tasks[i]; }
 };
