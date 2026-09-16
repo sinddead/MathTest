@@ -3,35 +3,10 @@
 #include <stdexcept>
 
 Task::Task() {
-	int r;
-	std::random_device rd;
-	std::mt19937 generate(rd());
-	std::uniform_int_distribution<int> distr1(1, 10000);
-	std::uniform_int_distribution<int> distr2(1, 4);
-	num1 = distr1(generate);
-	num2 = distr1(generate);
-	r = distr2(generate);
-	switch (r) {
-	case 1:
-		op = '+';
-		result = num1 + num2;
-		break;
-	case 2:
-		op = '-';
-		result = num1 - num2;
-		break;
-	case 3:
-		op = '*';
-		result = num1 * num2;
-		break;
-	case 4:
-		op = '/';
-		result = num1 / num2;
-		break;
-	default:
-		throw std::logic_error("This operation is not exist!");
-		break;
-	}
+	num1 = random_int(1, 10000);
+	num2 = random_int(1, 10000);
+	op = random_op();
+	result = calculation(num1, num2, op);
 }
 
 Task::Task(const Task& t) {
@@ -41,100 +16,56 @@ Task::Task(const Task& t) {
 	result = t.result;
 }
 
-Task::Task(const char c): Task() {
-	switch (c) {
-	case '+':
-		op = '+';
-		result = num1 + num2;
-		break;
-	case '-':
-		op = '-';
-		result = num1 - num2;
-		break;
-	case '*':
-		op = '*';
-		result = num1 * num2;
-		break;
-	case '/':
-		op = '/';
-		result = num1 / num2;
-		break;
-	default:
-		throw std::logic_error("This operation is not exist!");
-		break;
-	}
-}
-
-Task::Task(const int n1, const int n2): Task() {
-	num1 = n1;
-	num2 = n2;
-	if (num2 == 0) {
-		throw std::logic_error("You can't divide by zero!");
-	}
-	switch (op) {
-	case '+':
-		op = '+';
-		result = num1 + num2;
-		break;
-	case '-':
-		op = '-';
-		result = num1 - num2;
-		break;
-	case '*':
-		op = '*';
-		result = num1 * num2;
-		break;
-	case '/':
-		op = '/';
-		result = num1 / num2;
-		break;
-	default:
-		throw std::logic_error("This operation is not exist!");
-		break;
-	}
-}
-
-Task::Task(const int n1, const int n2, const char c): Task() {
-	int r;
-	std::random_device rd;
-	std::mt19937 generate(rd());
-	std::uniform_int_distribution<int> distr1(n1, n2);
-	num1 = distr1(generate);
-	num2 = distr1(generate);
+Task::Task(const char c) : Task() {
 	op = c;
+	result = calculation(num1, num2, op);
+}
+
+Task::Task(const int n1, const int n2) : Task() {
 	num1 = n1;
 	num2 = n2;
+	if (num2 == 0) throw std::logic_error("You can't divide by zero!");
+	result = calculation(num1, num2, op);
+}
+
+Task::Task(const int n1, const int n2, const char c) {
+	num1 = n1;
+	num2 = n2;
+	op = c;
+	result = calculation(num1, num2, op);
+}
+
+void Task::setnum1(int n) { num1 = n; result = calculation(num1, num2, op); }
+void Task::setnum2(int n) { num2 = n; result = calculation(num1, num2, op); }
+void Task::setchar(char c) { op = c;   result = calculation(num1, num2, op); }
+
+int calculation(int n1, int n2, char op) {
 	switch (op) {
 	case '+':
-		result = num1 + num2;
+		return n1 + n2;
 		break;
 	case '-':
-		result = num1 - num2;
+		return n1 - n2;
 		break;
 	case '*':
-		result = num1 * num2;
+		return n1 * n2;
 		break;
 	case '/':
-		result = num1 / num2;
+		if (n2 == 0) throw std::logic_error("You can't divide by zero!");
+		return n1 / n2;
 		break;
 	default:
 		throw std::logic_error("This operation is not exist!");
-		break;
 	}
 }
 
-int const Task::getres() {
-	return result;
+int Task::random_int(int lc, int rc) {
+	static std::mt19937 gen(std::random_device{}());
+	std::uniform_int_distribution<int> dist(lc, rc);
+	return dist(gen);
 }
 
-int const Task::getnum1() {
-	return num1;
-}
-
-int const Task::getnum2() {
-	return num2;
-}
-
-char const Task::getchar(){
-	return op;
+char Task::random_op() {
+	static const char ops[] = { '+', '-', '*', '/' };
+	return ops[random_int(0, 3)];
 }
