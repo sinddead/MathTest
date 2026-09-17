@@ -18,17 +18,39 @@ TEST(TaskConstructor, TestEveryOperation) {
 	EXPECT_EQ(Task(10, 5, '/').getres(), 2);
 }
 
-TEST(TaskConstructor, TestConstructError) {
+TEST(TaskConstructor, TestRightLowerThanLeft) {
 	EXPECT_THROW(Task t(1,0), std::logic_error);
 }
 
-TEST(MathTestConstructor, ImpossibleCountError) {
+TEST(TaskConstructor, TestBothCornersAreZero) {
+	EXPECT_THROW(Task t(0, 0), std::logic_error);
+}
+
+TEST(TaskConstructor, TestNegativePozitive) {
+	EXPECT_NO_THROW(Task t(-100, 100));
+}
+
+TEST(MathTestConstructor, TestImpossibleCountError) {
 	EXPECT_THROW(MathTest(0), std::logic_error);
 }
 
-TEST(MathTestConstructor, PcAnswersMatchTasks) {
+TEST(MathTestConstructor, TestPcAnswersMatchTasks) {
 	MathTest t(20, 1, 50, '+');
 	for (int i = 0; i < t.get_count(); ++i) {
 		EXPECT_EQ(t.get_pc_answer(i), t.get_task(i).getres());
+	}
+}
+
+TEST(MathTestConstructor, TestUseCorrectOperator) {
+	MathTest t(10, 1, 20, '*');
+	for (int i = 0; i < t.get_count(); ++i) {
+		EXPECT_EQ(t.get_task(i).getchar(), '*');
+	}
+}
+
+TEST(MathTestConstructor, TestNoZero) {
+	MathTest t(100, 0, 5, '/');
+	for (int i = 0; i < t.get_count(); ++i) {
+		EXPECT_NE(t.get_task(i).getnum2(), 0);
 	}
 }

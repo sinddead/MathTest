@@ -32,25 +32,22 @@ private:
 	int* _user_answers;
 	int* _pc_answers;
 	int _correct_count;
+
+	void generate_tasks(int lñ, int rñ, char op);
+	void ask_question(int index);
+	char calc_mark() const;
 public:
 	explicit MathTest(int count);
 	MathTest(int count, int lñ, int rñ);
 	MathTest(int count, int lñ, int rñ, char op);
-
-	MathTest(const MathTest&) = delete;
-	MathTest& operator=(const MathTest&) = delete;
-
 	~MathTest();
 
 	void run();
 	void show_statistics() const;
-	void generate_tasks(int lñ, int rñ, char op);
-	void ask_question(int index);
-	char calc_mark() const;
 
-	int get_count()           const { return _count; }
-	int get_correct_count()   const { return _correct_count; }
-	int get_pc_answer(int i)  const { return _pc_answers[i]; }
+	int get_count() const { return _count; }
+	int get_correct_count() const { return _correct_count; }
+	int get_pc_answer(int i) const { return _pc_answers[i]; }
 	int get_user_answer(int i) const { return _user_answers[i]; }
 	const Task& get_task(int i) const { return _tasks[i]; }
 };

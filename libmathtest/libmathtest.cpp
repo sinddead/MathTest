@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <limits>
 
 
 Task::Task() {
@@ -108,6 +109,7 @@ void MathTest::generate_tasks(int lc, int rc, char op) {
     for (int i = 0; i < _count; i++) {
         int f = Task::random_int(lc, rc);
         int s = Task::random_int(lc, rc);
+        if (f == s && s == 0) s = 1; //на случай бага, немного костыльно
         _tasks[i] = Task(f, s, op);
         _pc_answers[i] = _tasks[i].getres();
     }
@@ -127,11 +129,10 @@ void MathTest::ask_question(int index) {
         << _tasks[index].getnum1() << ' '
         << _tasks[index].getchar() << ' '
         << _tasks[index].getnum2() << " = ";
-    std::cin >> _user_answers[index];
-    if (!std::cin) {
+    while (!(std::cin >> _user_answers[index])) {
         std::cin.clear();
-        std::cin.ignore(10000, '\n');
-        _user_answers[index] = 0;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid input, please enter a number: ";
     }
 }
 
